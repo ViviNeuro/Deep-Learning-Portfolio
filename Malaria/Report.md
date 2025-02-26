@@ -22,11 +22,11 @@ To prepare the dataset for model training, we applied several preprocessing step
 
 3. Image Visualization: Conducted exploratory data analysis by visualizing sample images. Below is a sample:
 
-```{figure} ../images/Malaria_cells.png
----
-width: 20%
----
-```
+<figure>
+    <img src="../images/Malaria_cells.png" width="200px">
+    <figcaption>Figure 1: Malaria-infected cells under a microscope.</figcaption>
+</figure>
+
 
 4. Color Transformations:
 
