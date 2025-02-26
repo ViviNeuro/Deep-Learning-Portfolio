@@ -1,0 +1,153 @@
+# Malaria Detection using Convolutional Neural Networks
+
+## Executive Summary
+Malaria is a life-threatening disease caused by Plasmodium parasites and transmitted through mosquito bites. In 2019, over 229 million cases and approximately 400,000 deaths were reported worldwide, with children under five years old being the most vulnerable, accounting for 67% of fatalities.
+
+Traditional malaria diagnosis relies on expert examination of blood cells under a microscope. This process is not only tedious and time-consuming but also susceptible to inter-observer variability, leading to potential diagnostic errors.
+
+To address these challenges, this project proposes leveraging deep learning techniques to automate malaria detection. Specifically, we utilize a pre-trained VGG16 model, which strikes a balance between reducing both missed infections and unnecessary treatments. By automating the diagnosis, this approach aims to enhance efficiency, accuracy, and accessibility in malaria screening, ultimately contributing to improved healthcare outcomes.
+
+
+## Dataset and Preprocessing
+####  Dataset Download
+
+The dataset consists of labeled images of red blood cells, categorized as either parasitized or uninfected.
+
+#### Image Preprocessing
+To prepare the dataset for model training, we applied several preprocessing steps:
+
+1. Image Resizing: Standardized all images to 64x64 pixels for uniform model input.
+
+2. Normalization: Scaled pixel values to the range [0,1] by dividing by 255, improving model convergence.
+
+3. Image Visualization: Conducted exploratory data analysis by visualizing sample images. Below is a sample:
+
+```{figure} ../images/Malaria_cells.png
+---
+width: 20%
+---
+```
+
+4. Color Transformations:
+
+- HSV Conversion: Converted images to the HSV color space to enhance the visibility of parasite structures.
+
+- Gaussian Blurring: Applied Gaussian blurring, but it was found to be suboptimal as it reduced feature sharpness. HSV transformation was more effective in highlighting parasitized regions.
+
+5. One-Hot Encoding: Encoded class labels for both training and testing sets, facilitating categorical classification.
+
+
+## Model Development 
+
+We developed and experimented with five different models to evaluate their effectiveness in malaria detection.
+
+#### 1. CNN Base Model
+
+Our initial approach utilized a convolutional neural network (CNN) architecture consisting of three convolutional layers, along with max pooling and dropout mechanisms.
+
+**Convolutional Layers**
+
+The three convolutional layers each contain 32 filters with a 2×2 kernel size and "same" padding to preserve spatial dimensions. 
+
+**Pooling Layers**
+Max pooling is applied to reduce the spatial dimensions of the feature maps by selecting the maximum value within each window. 
+
+**Dropout Layers**
+Dropout is used as a regularization technique to randomly deactivate neurons during training, reducing overfitting.
+
+**Dense Layers and Output**
+After the convolutional and pooling blocks, the feature maps are flattened into a one-dimensional vector.
+  
+- **Fully Connected Layer:**  
+  A dense layer with 512 neurons is used to learn complex interactions between features.
+  
+- **Output Layer:**  
+  A final dense layer with 2 neurons (softmax activation) classifies the images.
+
+All the preivous layers use ReLu (Rectified Linear Unit) activation function. 
+
+
+#### 2. CNN Model 1
+Model 1 consisted of 2 convolutional layers within a block before applying pooling. This allows the network to learn more complex and abstract features while maintaining the full spatial resolution. Furthermore, it increases the receptive field. 
+
+
+#### 3. CNN Model 2
+This model incorporates **batch normalization** and **LeakyReLU**:
+
+- Batch Normalization: Normalizes inputs across layers, improving stability and convergence.
+
+- LeakyReLU: Allows small gradients for negative inputs, mitigating dying ReLU problems. 
+
+#### 4. CNN Model 3
+This model integrates data augmentation, applying rotation, width and height shifting, shear (which skews images along an axis), zoom, and flipping to increase variability in the dataset, improving generalization. 
+
+#### 5. CNN Model 4
+This model utilizes **pre-trained VGG16**, leveraging transfer learning to enhance performance with a smaller dataset.
+
+
+
+## Common Elements Across Models
+
+**Callbacks for Model Training**
+
+To enhance training efficiency and guard against overfitting, two key callbacks were implemented during the training process of all models:
+1. **Early Stopping** to monitor the validation loss during training and stop the process if it does not improve for 2 consecutive epochs.
+2. **Model Checkpoint** to save the best version of the model during training based on the lowest validation loss.
+
+
+**Model Training**
+
+All models were trained using:
+
+- Batch Size: 32
+- Validation Split: 20% of training data
+- Epochs: 20 (early stopping enabled)
+- Verbosity: 1 (for real-time progress monitoring)
+
+
+## Model comparison
+
+*   **Base model**
+          Overall accuracy = 97% / val accuracy = 98.7%
+          Recall class 0 = 98%
+          Recall class 1 = 97%
+          FN = 23 - FP = 44
+<br>
+*   **Model 1**
+          Overall accuracy = 98% / val accuracy = 97.8%
+          Recall class 0 = 97%
+          Recall class 1 = 98%
+          FN = 37 - FP = 25
+<br>
+*   **Model 2**
+        Overall accuracy = 97% / val accuracy = 99.6%
+        Recall class 0 = 100%
+        Recall class 1 = 95%
+        FN = 4 - FP = 64
+<br>
+*   **Model 3, data augmentation**
+        Overall accuracy = 95% / val accuracy = 93.7%
+        Recall class 0 = 99%
+        Recall class 1 = 91%
+        FN = 12 - FP = 119
+<br>
+*   **Model 5, pre-trained model**
+        Overall accuracy = 99% / val accuracy = 98.5%
+        Recall class 0 = 99%
+        Recall class 1 = 99%
+        FN = 17 - FP = 17
+
+---
+
+**Model 5 (Pre-trained VGG16) performs the best**
+
+Highest test accuracy (98.6%) and overall accuracy (99%).
+High recall (99%) for infected cells, balanced FN (17) and FP (17), reducing both missed infections and unnecessary treatments. It benefits from transfer learning, meaning it generalizes well and requires less training time.
+
+---
+
+Model 3 (Data Augmentation) performs poorly.
+Significantly higher FP (119) means it incorreclty classifies malaria cases, making it unreliable.
+
+Model 2 minimizes FN (4), making it excellent for detection, but it reaches a lower recall for class 1.
+
