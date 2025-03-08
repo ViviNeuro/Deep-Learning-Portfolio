@@ -1,19 +1,37 @@
-# Malaria Detection using Convolutional Neural Networks
+---
+title: Malaria detection using Convolutional Neural Network
 
-## Executive Summary
-Malaria is a life-threatening disease caused by Plasmodium parasites and transmitted through mosquito bites. In 2019, over 229 million cases and approximately 400,000 deaths were reported worldwide, with children under five years old being the most vulnerable, accounting for 67% of fatalities.
+authors:
+  - name: Viviana Greco
+    #orcid: 0000-0002-7859-8394
+    email: vivianagreco22@gmail.com
+abstract: >
+  Malaria is a life-threatening disease caused by Plasmodium parasites and transmitted through mosquito bites. In 2019, over 229 million cases and approximately 400,000 deaths were reported worldwide, with children under five years old being the most vulnerable, accounting for 67% of fatalities.
 
-Traditional malaria diagnosis relies on expert examination of blood cells under a microscope. This process is not only tedious and time-consuming but also susceptible to inter-observer variability, leading to potential diagnostic errors.
+  Traditional malaria diagnosis relies on expert examination of blood cells under a microscope. This process is not only tedious and time-consuming but also susceptible to inter-observer variability, leading to potential diagnostic errors.
 
-To address these challenges, this project proposes leveraging deep learning techniques to automate malaria detection. Specifically, we utilize a pre-trained VGG16 model, which strikes a balance between reducing both missed infections and unnecessary treatments. By automating the diagnosis, this approach aims to enhance efficiency, accuracy, and accessibility in malaria screening, ultimately contributing to improved healthcare outcomes.
+  To address these challenges, this project proposes leveraging deep learning techniques to automate malaria detection. Specifically, we utilize a pre-trained VGG16 model, which strikes a balance between reducing both missed infections and unnecessary treatments. By automating the diagnosis, this approach aims to enhance efficiency, accuracy, and accessibility in malaria screening, ultimately contributing to improved healthcare outcomes.
 
+#keywords: Deep Learning, CNN
 
-## Dataset and Preprocessing
-####  Dataset Download
+# exports:
+#   - format: docx
+#     output: exports/my-document.docx
 
-The dataset consists of labeled images of red blood cells, categorized as either parasitized or uninfected.
+exports:
+  - format: typst
+    template: lapreprint-typst
+    output: exports/Report.pdf
+---
 
-#### Image Preprocessing
+<br>
+
+## Dataset and Preprocessing <br>
+###  Dataset Download
+
+The dataset consists of labeled images of red blood cells, categorized as either parasitized or uninfected. You can find the dataset on [Kaggle](https://www.kaggle.com/datasets/iarunava/cell-images-for-detecting-malaria).
+
+### Image Preprocessing
 To prepare the dataset for model training, we applied several preprocessing steps:
 
 1. Image Resizing: Standardized all images to 64x64 pixels for uniform model input.
@@ -22,11 +40,10 @@ To prepare the dataset for model training, we applied several preprocessing step
 
 3. Image Visualization: Conducted exploratory data analysis by visualizing sample images. Below is a sample:
 
-<figure>
-    <img src="../images/Malaria_cells.png" width="200px">
-    <figcaption>Figure 1: Malaria-infected cells under a microscope.</figcaption>
-</figure>
-
+:::{figure} ./images/Malaria_cells.png
+:label: citations
+Malaria-infected cells under a microscope.
+:::
 
 4. Color Transformations:
 
@@ -39,11 +56,11 @@ To prepare the dataset for model training, we applied several preprocessing step
 
 ## Model Development 
 
-We developed and experimented with five different models to evaluate their effectiveness in malaria detection.
+We developed and experimented with five different models to evaluate their effectiveness in malaria detection.<br><br>
 
-#### 1. CNN Base Model
+### **CNN Base Model**
 
-Our initial approach utilized a convolutional neural network (CNN) architecture consisting of three convolutional layers, along with max pooling and dropout mechanisms.
+Our initial approach utilized a convolutional neural network (CNN) architecture consisting of three convolutional layers, along with max pooling and dropout mechanisms.<br>
 
 **Convolutional Layers**
 
@@ -64,25 +81,25 @@ After the convolutional and pooling blocks, the feature maps are flattened into 
 - **Output Layer:**  
   A final dense layer with 2 neurons (softmax activation) classifies the images.
 
-All the preivous layers use ReLu (Rectified Linear Unit) activation function. 
+All the preivous layers use ReLu (Rectified Linear Unit) activation function.<br><br>
 
 
-#### 2. CNN Model 1
-Model 1 consisted of 2 convolutional layers within a block before applying pooling. This allows the network to learn more complex and abstract features while maintaining the full spatial resolution. Furthermore, it increases the receptive field. 
+### **CNN Model 1**<br>
+Model 1 consisted of 2 convolutional layers within a block before applying pooling. This allows the network to learn more complex and abstract features while maintaining the full spatial resolution. Furthermore, it increases the receptive field.<br><br>
 
 
-#### 3. CNN Model 2
+### **CNN Model 2**<br>
 This model incorporates **batch normalization** and **LeakyReLU**:
 
 - Batch Normalization: Normalizes inputs across layers, improving stability and convergence.
 
-- LeakyReLU: Allows small gradients for negative inputs, mitigating dying ReLU problems. 
+- LeakyReLU: Allows small gradients for negative inputs, mitigating dying ReLU problems.<br><br>
 
-#### 4. CNN Model 3
-This model integrates data augmentation, applying rotation, width and height shifting, shear (which skews images along an axis), zoom, and flipping to increase variability in the dataset, improving generalization. 
+### **CNN Model 3**<br>
+This model integrates data augmentation, applying rotation, width and height shifting, shear (which skews images along an axis), zoom, and flipping to increase variability in the dataset, improving generalization.<br><br>
 
-#### 5. CNN Model 4
-This model utilizes **pre-trained VGG16**, leveraging transfer learning to enhance performance with a smaller dataset.
+### **CNN Model 4**<br>
+This model utilizes **pre-trained VGG16**, leveraging transfer learning to enhance performance with a smaller dataset.<br><br>
 
 
 
@@ -102,52 +119,71 @@ All models were trained using:
 - Batch Size: 32
 - Validation Split: 20% of training data
 - Epochs: 20 (early stopping enabled)
-- Verbosity: 1 (for real-time progress monitoring)
+- Verbosity: 1 (for real-time progress monitoring)<br><br>
 
 
-## Model comparison
+## **Model comparison**
 
-*   **Base model**
-          Overall accuracy = 97% / val accuracy = 98.7%
-          Recall class 0 = 98%
-          Recall class 1 = 97%
-          FN = 23 - FP = 44
+*   **Base model**<br>
+          Overall accuracy = 97% / val accuracy = 98.7%<br>
+          Recall class 0 = 98%<br>
+          Recall class 1 = 97%<br>
+          FN = 23 - FP = 44<br>
 <br>
-*   **Model 1**
-          Overall accuracy = 98% / val accuracy = 97.8%
-          Recall class 0 = 97%
-          Recall class 1 = 98%
-          FN = 37 - FP = 25
+*   **Model 1** <br>
+          Overall accuracy = 98% / val accuracy = 97.8%<br>
+          Recall class 0 = 97%<br>
+          Recall class 1 = 98%<br>
+          FN = 37 - FP = 25<br>
 <br>
-*   **Model 2**
-        Overall accuracy = 97% / val accuracy = 99.6%
-        Recall class 0 = 100%
-        Recall class 1 = 95%
-        FN = 4 - FP = 64
+*   **Model 2**<br>
+        Overall accuracy = 97% / val accuracy = 99.6%<br>
+        Recall class 0 = 100%<br>
+        Recall class 1 = 95%<br>
+        FN = 4 - FP = 64<br>
 <br>
-*   **Model 3, data augmentation**
-        Overall accuracy = 95% / val accuracy = 93.7%
-        Recall class 0 = 99%
-        Recall class 1 = 91%
-        FN = 12 - FP = 119
+*   **Model 3, data augmentation**<br>
+        Overall accuracy = 95% / val accuracy = 93.7%<br>
+        Recall class 0 = 99%<br>
+        Recall class 1 = 91%<br>
+        FN = 12 - FP = 119<br>
 <br>
-*   **Model 5, pre-trained model**
-        Overall accuracy = 99% / val accuracy = 98.5%
-        Recall class 0 = 99%
-        Recall class 1 = 99%
-        FN = 17 - FP = 17
+*   **Model 4, pre-trained model**<br>
+        Overall accuracy = 99% / val accuracy = 98.5%<br>
+        Recall class 0 = 99%<br>
+        Recall class 1 = 99%<br>
+        FN = 17 - FP = 17<br>
 
 ---
 
-**Model 5 (Pre-trained VGG16) performs the best**
+The final proposed model specification is the [pre-trained VGG16 Model](https://keras.io/api/applications/vgg/) (Model 5). VGG16 is a deep convolutional neural network with 16 weighted layers (13 convolutional and 3 fully connected layers) pretrained on the ImageNet dataset. The  model architecture includes 5 blocks with convolutional layers and 5 max pooling layers to reduce the spatial dimensions of the feature maps, and 3 fully connected laters to perfom high-level reasoning based on the features extracted by the convolutioanl base.  
 
-Highest test accuracy (98.6%) and overall accuracy (99%).
-High recall (99%) for infected cells, balanced FN (17) and FP (17), reducing both missed infections and unnecessary treatments. It benefits from transfer learning, meaning it generalizes well and requires less training time.
+```
+vgg = VGG16(include_top=False, weights='imagenet', input_shape=(64, 64, 3))
+```
 
----
+We specified `include_top=False` to allow the model to be used for feature extractions for a new task. Therefore we removed the original 3 fully connected layers.  The model uses pre-trained weights from ImageNet and accepts input images of size 64x64 with 3 color channels.
 
-Model 3 (Data Augmentation) performs poorly.
-Significantly higher FP (119) means it incorreclty classifies malaria cases, making it unreliable.
+```
+transfer_layer = vgg.get_layer('block5_pool')
+```
 
-Model 2 minimizes FN (4), making it excellent for detection, but it reaches a lower recall for class 1.
+We selected `block5_pool` as the transfer layer. The features output by this pooling layer are used as input to custom classification head. We choose block_5 as it outputs high-level, abstract features.
 
+```
+x = Flatten()(transfer_layer.output)
+x = Dense(256, activation='relu')(x)
+x = Dropout(0.3)(x)
+x = BatchNormalization()(x)
+
+pred = Dense(2, activation='softmax')(x)
+```
+In our custom classification head, we flatten the features, apply a dense layer with ReLU activation, use dropout and batch normalization for regularization. Finally, output predictions via a dense layer with 2 nodes (one for each class) using softmax activation.
+
+```
+history4 = model4.fit(train_images, train_labels, batch_size = 32, callbacks = callbacks, validation_split = 0.2, epochs = 20, verbose = 1)
+```
+:::{figure} ./images/ClassificationReportVGG16.png
+:label: citations
+Classification Report and Confusion Matrix of the pre-trained VGG16 model. 
+:::
