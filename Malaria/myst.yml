@@ -1,0 +1,7 @@
+version: 1
+site:
+  template: book-theme
+project:
+  github: https://github.com/ViviNeuro/Deep-Learning-Portfolio
+  id: 417e820f-7a1a-4ba8-a575-b954ba5978c4
+
